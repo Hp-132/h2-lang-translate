@@ -1,5 +1,5 @@
 
-from flask import Flask, request, jsonify
+from flask import Flask, request, jsonify, render_template
 import requests
 
 app = Flask(__name__)
@@ -19,9 +19,9 @@ def translate(text, source_lang, target_lang):
     else:
         return f"Error: {response.status_code}, {response.text}"
 
-@app.route('/') 
+@app.route('/')
 def home():
-    return "Translation API is running! Use /translate?text=hello&source_lang=en&target_lang=fr"
+    return render_template('lang1.html')  
 
 @app.route('/translate', methods=['GET'])
 def translate_api():
@@ -36,7 +36,4 @@ def translate_api():
     return jsonify({"translated_text": translated_text})
 
 if __name__ == '__main__':
-    import os
-    port = int(os.environ.get("PORT", 5000))  
-    app.run(host='0.0.0.0', port=port)
-
+    app.run(debug=True)
