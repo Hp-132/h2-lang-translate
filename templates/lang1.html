@@ -4,94 +4,84 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Language Translator</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        neon: "#00FFFF",
+                        dark: "#121212",
+                        card: "#1e1e1e",
+                        btnHover: "#00BFFF"
+                    }
+                }
+            }
+        };
+    </script>
     <style>
-        body {
-            font-family: Arial, sans-serif;
-            background-color: #f4f4f9;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            height: 100vh;
-            margin: 0;
+        .neon-border {
+            border: 2px solid #00FFFF;
+            box-shadow: 0 0 15px #00FFFF, 0 0 30px #00FFFF;
         }
-        .container {
-            background: white;
-            padding: 20px;
-            border-radius: 10px;
-            box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1);
-            width: 350px;
-            text-align: center;
-        }
-        textarea {
-            width: 100%;
-            height: 100px;
-            padding: 10px;
-            border: 1px solid #ddd;
-            border-radius: 5px;
-            resize: none;
-            margin-bottom: 10px;
-        }
-        select, button {
-            width: 100%;
-            padding: 10px;
-            margin-top: 10px;
-            border-radius: 5px;
-            border: 1px solid #ddd;
-        }
-        button {
-            background-color: #007bff;
-            color: white;
-            border: none;
-            cursor: pointer;
-            font-size: 16px;
-        }
-        button:hover {
-            background-color: #0056b3;
-        }
-        .output {
-            margin-top: 15px;
-            font-weight: bold;
-            color: #333;
+
+        /* Additional glow effect for hover */
+        .glow:hover {
+            box-shadow: 0 0 20px #00FFFF, 0 0 40px #00FFFF, 0 0 60px #00FFFF;
         }
     </style>
 </head>
-<body>
-    <div class="container">
-        <h2>Language Translator</h2>
-        <textarea id="text" placeholder="Enter text to translate..."></textarea>
-        <select id="source_lang">
-            <option value="en">English</option>
-            <option value="fr">French</option>
-            <option value="es">Spanish</option>
-            <option value="de">German</option>
-            <option value="hi">Hindi</option>
-        </select>
-        <select id="target_lang">
-            <option value="fr">French</option>
-            <option value="en">English</option>
-            <option value="es">Spanish</option>
-            <option value="de">German</option>
-            <option value="hi">Hindi</option>
-        </select>
-        <button onclick="translateText()">Translate</button>
-        <p class="output" id="translated_text"></p>
+<body class="bg-dark text-neon flex flex-col items-center justify-center min-h-screen p-4">
+
+    <div class="flex flex-wrap gap-10">
+        <!-- Source Language Box -->
+        <div class="bg-card p-6 rounded-xl neon-border glow shadow-lg w-[400px] h-[350px] flex flex-col">
+            <h3 class="text-lg font-semibold mb-4 text-center">Source Language</h3>
+            <select id="source_lang" class="w-full p-2 bg-dark text-neon border border-neon rounded-md focus:ring-2 focus:ring-btnHover transition">
+                <option value="en">English</option>
+                <option value="fr">French</option>
+                <option value="es">Spanish</option>
+                <option value="de">German</option>
+                <option value="hi">Hindi</option>
+            </select>
+
+            <textarea id="text" class="w-full flex-grow mt-4 bg-card text-neon border border-neon rounded-lg p-3 resize-none focus:ring-2 focus:ring-btnHover transition" placeholder="Enter text..."></textarea>
+
+            <button onclick="translateText()" class="w-full mt-4 bg-neon text-dark px-4 py-2 rounded-md font-bold text-lg hover:bg-btnHover transition">
+                Translate
+            </button>
+        </div>
+
+        <!-- Target Language Box -->
+        <div class="bg-card p-6 rounded-xl neon-border glow shadow-lg w-[400px] h-[350px] flex flex-col">
+            <h3 class="text-lg font-semibold mb-4 text-center">Target Language</h3>
+            <select id="target_lang" class="w-full p-2 bg-dark text-neon border border-neon rounded-md focus:ring-2 focus:ring-btnHover transition">
+                <option value="fr">French</option>
+                <option value="en">English</option>
+                <option value="es">Spanish</option>
+                <option value="de">German</option>
+                <option value="hi">Hindi</option>
+            </select>
+
+            <textarea id="translated_text" class="w-full flex-grow mt-4 bg-card text-neon border border-neon rounded-lg p-3 resize-none focus:ring-2 focus:ring-btnHover transition" placeholder="Translation will appear here..." readonly></textarea>
+        </div>
     </div>
-    
+
     <script>
         function translateText() {
             let text = document.getElementById('text').value;
             let sourceLang = document.getElementById('source_lang').value;
             let targetLang = document.getElementById('target_lang').value;
-            
+
             if (text.trim() === "") {
                 alert("Please enter text to translate");
                 return;
             }
-            
+
             fetch(`/translate?text=${encodeURIComponent(text)}&source_lang=${sourceLang}&target_lang=${targetLang}`)
                 .then(response => response.json())
                 .then(data => {
-                    document.getElementById('translated_text').innerText = data.translated_text;
+                    document.getElementById('translated_text').value = data.translated_text;
                 })
                 .catch(error => {
                     console.error('Error:', error);
@@ -99,5 +89,6 @@
                 });
         }
     </script>
+
 </body>
 </html>
